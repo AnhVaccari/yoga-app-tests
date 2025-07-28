@@ -135,10 +135,11 @@ describe('FormComponent', () => {
   it('should create session when submitting in create mode', () => {
     mockRouter.url = '/sessions/create';
     component.ngOnInit();
+    component.onUpdate = false;
 
     const sessionData = {
       name: 'New Session',
-      date: '2025-07-25',
+      date: '2025-07-28',
       teacher_id: 1,
       description: 'New description',
     };
