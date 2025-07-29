@@ -82,9 +82,9 @@ describe('LoginComponent', () => {
   });
 
   it('should login successfully', () => {
-    // Arrange - Mock de la réponse de connexion
+    // Mock de la réponse de connexion
     const mockResponse = {
-      token: 'fake-token',
+      token: 'abcd',
       type: 'Bearer',
       id: 1,
       username: 'test@test.com',
