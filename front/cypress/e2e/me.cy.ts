@@ -58,4 +58,48 @@ describe('Me spec', () => {
     cy.wait('@deleteUser');
     cy.url().should('not.include', '/me');
   });
+
+  it('Should display admin profile without delete button', () => {
+    // Mock connexion ADMIN
+    cy.intercept('POST', '/api/auth/login', {
+      body: {
+        id: 2,
+        username: 'adminUser',
+        firstName: 'Admin',
+        lastName: 'User',
+        admin: true,
+      },
+    });
+
+    // Mock infos utilisateur admin
+    cy.intercept('GET', '/api/user/2', {
+      id: 2,
+      firstName: 'Admin',
+      lastName: 'User',
+      email: 'admin@test.com',
+      admin: true,
+      createdAt: '2025-03-12T00:00:00Z',
+      updatedAt: '2025-06-15T00:00:00Z',
+    }).as('getAdminInfo');
+
+    cy.intercept('GET', '/api/session', []).as('session');
+
+    // Se connecter
+    cy.visit('/login');
+    cy.get('input[formControlName=email]').type('admin@test.com');
+    cy.get('input[formControlName=password]').type('admin123');
+    cy.get('button[type=submit]').click();
+
+    // Aller sur Account
+    cy.get('span').contains('Account').click();
+
+    // Vérifications admin
+    cy.wait('@getAdminInfo');
+    cy.get('p').should('contain', 'You are admin');
+    cy.get('button').contains('Delete').should('not.exist');
+
+    // Tester le bouton Back
+    cy.get('button[mat-icon-button]').click();
+    cy.url().should('include', '/sessions');
+  });
 });
