@@ -181,4 +181,37 @@ describe('FormComponent', () => {
     );
     expect(mockRouter.navigate).toHaveBeenCalledWith(['sessions']);
   });
+
+  it('should load teachers and initialize form (integration test)', () => {
+    // Test intégration TeacherService + FormBuilder + Router
+    component.ngOnInit();
+
+    expect(mockTeacherService.all).toHaveBeenCalled();
+    expect(component.sessionForm).toBeDefined();
+  });
+
+  it('should create session with snackbar and navigation (integration test)', () => {
+    // Test intégration SessionApiService + SnackBar + Router
+    mockRouter.url = '/sessions/create';
+    component.ngOnInit();
+    component.onUpdate = false;
+
+    const sessionData = {
+      name: 'Integration Session',
+      date: '2025-08-01',
+      teacher_id: 2,
+      description: 'Integration test description',
+    };
+    component.sessionForm?.patchValue(sessionData);
+
+    component.submit();
+
+    expect(mockSessionApiService.create).toHaveBeenCalledWith(sessionData);
+    expect(mockMatSnackBar.open).toHaveBeenCalledWith(
+      'Session created !',
+      'Close',
+      { duration: 3000 }
+    );
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['sessions']);
+  });
 });
