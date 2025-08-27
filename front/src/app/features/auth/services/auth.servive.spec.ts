@@ -27,6 +27,7 @@ describe('AuthService', () => {
   });
 
   it('should be created', () => {
+    // @ts-ignore
     expect(service).toBeTruthy();
   });
 
@@ -47,15 +48,18 @@ describe('AuthService', () => {
     };
 
     service.login(loginRequest).subscribe((response) => {
+      // @ts-ignore
       expect(response).toEqual(mockResponse);
     });
     const req = httpMock.expectOne('api/auth/login');
+    // @ts-ignore
     expect(req.request.method).toBe('POST');
+    // @ts-ignore
     expect(req.request.body).toEqual(loginRequest);
     req.flush(mockResponse);
   });
 
-  it('shoul call register', () => {
+  it('should call register', () => {
     const registerRequest: RegisterRequest = {
       email: 'test@test.com',
       firstName: 'John',
@@ -64,11 +68,14 @@ describe('AuthService', () => {
     };
 
     service.register(registerRequest).subscribe((response) => {
+      // @ts-ignore
       expect(response).toBeUndefined();
     });
 
     const req = httpMock.expectOne('api/auth/register');
+    // @ts-ignore
     expect(req.request.method).toBe('POST');
+    // @ts-ignore
     expect(req.request.body).toEqual(registerRequest);
     req.flush(null);
   });

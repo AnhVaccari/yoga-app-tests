@@ -72,6 +72,7 @@ describe('MeComponent', () => {
   });
 
   it('should create', () => {
+    // @ts-ignore
     expect(component).toBeTruthy();
   });
 
@@ -79,8 +80,11 @@ describe('MeComponent', () => {
     const compiled = fixture.nativeElement;
 
     // Vérifie que les infos du mockUser s'affichent
+    // @ts-ignore
     expect(compiled.textContent).toContain('John');
+    // @ts-ignore
     expect(compiled.textContent).toContain('DOE');
+    // @ts-ignore
     expect(compiled.textContent).toContain('john@test.com');
   });
 
@@ -90,6 +94,7 @@ describe('MeComponent', () => {
     component.back();
 
     // Vérifie que window.history.back a été appelé
+    // @ts-ignore
     expect(spy).toHaveBeenCalled();
   });
 
@@ -97,9 +102,11 @@ describe('MeComponent', () => {
     component.delete();
 
     // Vérifie que userService.delete a été appelé avec le bon ID
+    // @ts-ignore
     expect(mockUserService.delete).toHaveBeenCalledWith('1');
 
     // Vérifie que le snackbar s'affiche
+    // @ts-ignore
     expect(mockMatSnackBar.open).toHaveBeenCalledWith(
       'Your account has been deleted !',
       'Close',
@@ -107,9 +114,11 @@ describe('MeComponent', () => {
     );
 
     // Vérifie que l'utilisateur est déconnecté
+    // @ts-ignore
     expect(mockSessionService.logOut).toHaveBeenCalled();
 
     // Vérifie la navigation vers la page d'accueil
+    // @ts-ignore
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/']);
   });
 });
