@@ -158,4 +158,28 @@ describe('DetailComponent', () => {
     expect(mockSessionApiService.unParticipate).toHaveBeenCalledWith('1', '1');
     expect(mockSessionApiService.detail).toHaveBeenCalled();
   });
+
+  it('should load session, teacher and handle participation (integration test)', () => {
+    // Ce test vérifie l'intégration SessionApiService + TeacherService + état du composant
+    component.ngOnInit();
+
+    expect(mockSessionApiService.detail).toHaveBeenCalledWith('1');
+    expect(mockTeacherService.detail).toHaveBeenCalledWith('1');
+    expect(component.session).toEqual(mockSession);
+    expect(component.teacher).toEqual(mockTeacher);
+    expect(component.isParticipate).toBeTruthy();
+  });
+
+  it('should delete session and navigate with snackbar (integration test)', () => {
+    // Ce test vérifie l'intégration SessionApiService + Router + SnackBar
+    component.delete();
+
+    expect(mockSessionApiService.delete).toHaveBeenCalledWith('1');
+    expect(mockMatSnackBar.open).toHaveBeenCalledWith(
+      'Session deleted !',
+      'Close',
+      { duration: 3000 }
+    );
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['sessions']);
+  });
 });
