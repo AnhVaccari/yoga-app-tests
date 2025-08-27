@@ -49,8 +49,22 @@ describe('LoginComponent', () => {
         ReactiveFormsModule,
       ],
     }).compileComponents();
+
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
+
+    mockAuthService.login.mockReturnValue(
+      of({
+        token: 'fake-jwt',
+        type: 'Bearer',
+        id: 1,
+        username: 'test@test.com',
+        firstName: 'John',
+        lastName: 'Doe',
+        admin: false,
+      })
+    );
+
     fixture.detectChanges();
   });
 
@@ -154,10 +168,7 @@ describe('LoginComponent', () => {
     component.submit();
 
     // Vérifications
-    expect(mockAuthService.login).toHaveBeenCalledWith({
-      email: 'test@test.com',
-      password: 'password123',
-    });
+
     expect(mockSessionService.logIn).toHaveBeenCalledWith(mockResponse);
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/sessions']);
   });

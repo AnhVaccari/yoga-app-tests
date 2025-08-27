@@ -45,6 +45,19 @@ describe('RegisterComponent', () => {
 
     fixture = TestBed.createComponent(RegisterComponent);
     component = fixture.componentInstance;
+
+    // Mock global
+    mockAuthService.register.mockReturnValue(
+      of({
+        token: 'fake-jwt',
+        type: 'Bearer',
+        id: 2,
+        username: 'newuser@test.com',
+        firstName: 'New',
+        lastName: 'User',
+        admin: false,
+      })
+    );
     fixture.detectChanges();
   });
 
@@ -116,19 +129,6 @@ describe('RegisterComponent', () => {
   });
 
   it('should register and redirect (integration test)', () => {
-    // Mock
-    const mockResponse = {
-      token: 'abcd',
-      type: 'Bearer',
-      id: 2,
-      username: 'newuser@test.com',
-      firstName: 'New',
-      lastName: 'User',
-      admin: false,
-    };
-
-    mockAuthService.register.mockReturnValue(of(mockResponse));
-
     // Remplir le formulaire
     component.form.patchValue({
       email: 'newuser@test.com',
@@ -137,6 +137,7 @@ describe('RegisterComponent', () => {
       password: 'password123',
     });
 
+    // Appel de submit
     component.submit();
 
     // Vérifications

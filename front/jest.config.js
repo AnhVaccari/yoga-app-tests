@@ -24,4 +24,7 @@ module.exports = {
   moduleDirectories: [
     "node_modules"
   ],
+  testMatch: [
+    "**/?(*.)+(spec|test).[tj]s?(x)"
+  ],
 };
