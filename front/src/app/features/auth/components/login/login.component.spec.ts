@@ -130,4 +130,35 @@ describe('LoginComponent', () => {
     const compiled = fixture.nativeElement;
     expect(compiled.textContent).toContain('An error occurred');
   });
+
+  it('should login and redirect (integration test)', () => {
+    // Mock
+    const mockResponse = {
+      token: 'abcd',
+      type: 'Bearer',
+      id: 1,
+      username: 'test@test.com',
+      firstName: 'John',
+      lastName: 'Doe',
+      admin: false,
+    };
+
+    mockAuthService.login.mockReturnValue(of(mockResponse));
+
+    // Remplir le formulaire
+    component.form.patchValue({
+      email: 'test@test.com',
+      password: 'password123',
+    });
+
+    component.submit();
+
+    // Vérifications
+    expect(mockAuthService.login).toHaveBeenCalledWith({
+      email: 'test@test.com',
+      password: 'password123',
+    });
+    expect(mockSessionService.logIn).toHaveBeenCalledWith(mockResponse);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/sessions']);
+  });
 });

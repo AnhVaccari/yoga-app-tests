@@ -114,4 +114,55 @@ describe('RegisterComponent', () => {
     const compiled = fixture.nativeElement;
     expect(compiled.textContent).toContain('An error occurred');
   });
+
+  it('should register and redirect (integration test)', () => {
+    // Mock
+    const mockResponse = {
+      token: 'abcd',
+      type: 'Bearer',
+      id: 2,
+      username: 'newuser@test.com',
+      firstName: 'New',
+      lastName: 'User',
+      admin: false,
+    };
+
+    mockAuthService.register.mockReturnValue(of(mockResponse));
+
+    // Remplir le formulaire
+    component.form.patchValue({
+      email: 'newuser@test.com',
+      firstName: 'New',
+      lastName: 'User',
+      password: 'password123',
+    });
+
+    component.submit();
+
+    // Vérifications
+    expect(mockAuthService.register).toHaveBeenCalledWith({
+      email: 'newuser@test.com',
+      firstName: 'New',
+      lastName: 'User',
+      password: 'password123',
+    });
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/login']);
+  });
+
+  it('should handle register error (integration test)', () => {
+    // Mock d'erreur
+    mockAuthService.register.mockReturnValue(throwError('Registration failed'));
+
+    component.form.patchValue({
+      email: 'test@test.com',
+      firstName: 'Test',
+      lastName: 'User',
+      password: 'password123',
+    });
+
+    component.submit();
+
+    expect(mockAuthService.register).toHaveBeenCalled();
+    expect(component.onError).toBe(true);
+  });
 });
