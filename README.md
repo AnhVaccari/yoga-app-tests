@@ -25,7 +25,7 @@ Full-stack yoga session management app with authentication system.
 
 #### 1. Clone the project
 
-git clone https://github.com/your-username/yoga-app
+git clone https://github.com/AnhVaccari/yoga-app
 `cd yoga`
 
 #### 2. MySQL Database
@@ -66,7 +66,7 @@ mysql -u root -p yoga < ressources/sql/script.sql
 ##### Frontend
 
 `cd front`
-`npm start`
+`ng serve`
 
 - **App available at :** http://localhost:4200
 

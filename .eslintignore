@@ -1,0 +1,4 @@
+src/
+cypress/
+*.ts
+*.js
