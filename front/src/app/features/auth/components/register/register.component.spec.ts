@@ -1,31 +1,29 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RegisterComponent } from './register.component';
-import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
-import { of, throwError } from 'rxjs';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { jest } from '@jest/globals';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { of, throwError } from 'rxjs';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('RegisterComponent (unit tests)', () => {
   let component: RegisterComponent;
   let fixture: ComponentFixture<RegisterComponent>;
-  const mockAuthService = { register: jest.fn() };
-  const mockRouter = { navigate: jest.fn() };
+  let mockAuthService: any;
+  let mockRouter: any;
 
   beforeEach(async () => {
+    mockAuthService = { register: jest.fn() };
+    mockRouter = { navigate: jest.fn() };
+
     await TestBed.configureTestingModule({
       declarations: [RegisterComponent],
-      providers: [
-        { provide: AuthService, useValue: mockAuthService },
-        { provide: Router, useValue: mockRouter },
-      ],
       imports: [
         ReactiveFormsModule,
         BrowserAnimationsModule,
@@ -34,6 +32,10 @@ describe('RegisterComponent (unit tests)', () => {
         MatIconModule,
         MatInputModule,
       ],
+      providers: [
+        { provide: AuthService, useValue: mockAuthService },
+        { provide: Router, useValue: mockRouter },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(RegisterComponent);
@@ -41,48 +43,66 @@ describe('RegisterComponent (unit tests)', () => {
     fixture.detectChanges();
   });
 
-  // @ts-ignore
-  it('should create', () => expect(component).toBeTruthy());
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 
-  it('should have invalid form when fields are empty', () => {
-    // @ts-ignore
+  it('should have invalid form when empty', () => {
     expect(component.form.valid).toBeFalsy();
-    // @ts-ignore
     expect(component.form.get('firstName')?.hasError('required')).toBeTruthy();
-    // @ts-ignore
     expect(component.form.get('lastName')?.hasError('required')).toBeTruthy();
-    // @ts-ignore
     expect(component.form.get('email')?.hasError('required')).toBeTruthy();
-    // @ts-ignore
     expect(component.form.get('password')?.hasError('required')).toBeTruthy();
   });
 
-  it('should register successfully', () => {
-    mockAuthService.register.mockReturnValue(of(void 0));
+  it('should not call register if form is invalid', () => {
+    // Formulaire vide ou invalide
     component.form.patchValue({
-      firstName: 'John',
-      lastName: 'Doe',
-      email: 'john.doe@test.com',
-      password: 'password123',
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
     });
+
+    const spy = jest.spyOn(component['authService'], 'register');
+
     component.submit();
-    // @ts-ignore
-    expect(mockAuthService.register).toHaveBeenCalled();
-    // @ts-ignore
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/login']);
+
+    expect(spy).not.toHaveBeenCalled();
   });
 
-  it('should display error on registration failure', () => {
-    mockAuthService.register.mockReturnValue(throwError('Registration failed'));
-    component.form.patchValue({
+  it('should register successfully', () => {
+    const formData = {
       firstName: 'John',
       lastName: 'Doe',
-      email: 'john.doe@test.com',
+      email: 'john@test.com',
       password: 'password123',
-    });
+    };
+    mockAuthService.register.mockReturnValue(of(void 0));
+
+    component.form.patchValue(formData);
     component.submit();
-    // @ts-ignore
+
+    expect(mockAuthService.register).toHaveBeenCalledWith(formData);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/login']);
+    expect(component.onError).toBeFalsy();
+  });
+
+  it('should handle registration error', () => {
+    const formData = {
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john@test.com',
+      password: 'password123',
+    };
+    mockAuthService.register.mockReturnValue(throwError(() => 'error'));
+
+    component.form.patchValue(formData);
+    component.submit();
+
+    expect(mockAuthService.register).toHaveBeenCalledWith(formData);
     expect(component.onError).toBeTruthy();
+    expect(mockRouter.navigate).not.toHaveBeenCalled();
   });
 });
 
@@ -110,65 +130,43 @@ describe('RegisterComponent (integration tests)', () => {
     fixture.detectChanges();
   });
 
-  it('should register and redirect to login', () => {
+  it('should register and navigate on success', () => {
     const navigateSpy = jest.spyOn(router, 'navigate');
-
-    // Mock
-    const mockResponse = {
-      token: 'abcd',
-      type: 'Bearer',
-      id: 2,
-      username: 'newuser@test.com',
+    const formData = {
       firstName: 'New',
       lastName: 'User',
-      admin: false,
+      email: 'newuser@test.com',
+      password: 'password123',
     };
 
     jest.spyOn(authService, 'register').mockReturnValue(of(void 0));
 
-    // Remplir le formulaire
-    component.form.patchValue({
-      email: 'newuser@test.com',
-      firstName: 'New',
-      lastName: 'User',
-      password: 'password123',
-    });
-
+    component.form.patchValue(formData);
     component.submit();
 
-    // @ts-ignore
-    expect(authService.register).toHaveBeenCalledWith({
-      email: 'newuser@test.com',
-      firstName: 'New',
-      lastName: 'User',
-      password: 'password123',
-    });
-
-    // @ts-ignore
+    expect(authService.register).toHaveBeenCalledWith(formData);
     expect(navigateSpy).toHaveBeenCalledWith(['/login']);
+    expect(component.onError).toBeFalsy();
   });
 
-  it('should handle register error and not redirect', () => {
+  it('should set onError on registration failure', () => {
     const navigateSpy = jest.spyOn(router, 'navigate');
+    const formData = {
+      firstName: 'Test',
+      lastName: 'User',
+      email: 'test@test.com',
+      password: 'password123',
+    };
 
     jest
       .spyOn(authService, 'register')
-      .mockReturnValue(throwError(() => 'Registration failed'));
+      .mockReturnValue(throwError(() => 'fail'));
 
-    component.form.patchValue({
-      email: 'test@test.com',
-      firstName: 'Test',
-      lastName: 'User',
-      password: 'password123',
-    });
-
+    component.form.patchValue(formData);
     component.submit();
 
-    // @ts-ignore
-    expect(authService.register).toHaveBeenCalled();
-    // @ts-ignore
+    expect(authService.register).toHaveBeenCalledWith(formData);
     expect(component.onError).toBe(true);
-    // @ts-ignore
     expect(navigateSpy).not.toHaveBeenCalled();
   });
 });
