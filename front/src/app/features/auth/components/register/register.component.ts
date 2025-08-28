@@ -34,6 +34,8 @@ export class RegisterComponent {
     private router: Router
   ) {}
 
+  ngOnInit(): void {}
+
   public submit(): void {
     if (this.form.invalid) {
       this.onError = true;
