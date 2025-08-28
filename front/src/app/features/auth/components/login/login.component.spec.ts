@@ -6,7 +6,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
 import { expect } from '@jest/globals';
 import { SessionService } from 'src/app/services/session.service';
 import { AuthService } from 'src/app/features/auth/services/auth.service';
@@ -95,7 +94,7 @@ describe('LoginComponent', () => {
     expect(component.hide).toBeTruthy();
   });
 
-  it('should login successfully', () => {
+  it('should login successfully (integration test)', () => {
     // Mock de la réponse de connexion
     const mockResponse = {
       token: 'abcd',
@@ -125,7 +124,7 @@ describe('LoginComponent', () => {
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/sessions']);
   });
 
-  it('should display error on login failure', () => {
+  it('should display error on login failure (integration test)', () => {
     // Mock d'une erreur
     mockAuthService.login.mockReturnValue(throwError('Login failed'));
 
