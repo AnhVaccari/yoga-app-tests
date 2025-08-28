@@ -7,8 +7,26 @@ import { AuthService } from './auth.service';
 import { LoginRequest } from '../interfaces/loginRequest.interface';
 import { RegisterRequest } from '../interfaces/registerRequest.interface';
 import { SessionInformation } from 'src/app/interfaces/sessionInformation.interface';
+import { SessionService } from 'src/app/services/session.service';
 
-describe('AuthService', () => {
+describe('AuthService (unit tests)', () => {
+  let service: AuthService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [AuthService],
+    });
+    service = TestBed.inject(AuthService);
+  });
+
+  it('should be created', () => {
+    // @ts-ignore
+    expect(service).toBeTruthy();
+  });
+});
+
+describe('AuthService (integration tests)', () => {
   let service: AuthService;
   let httpMock: HttpTestingController;
 
@@ -26,12 +44,7 @@ describe('AuthService', () => {
     httpMock.verify();
   });
 
-  it('should be created', () => {
-    // @ts-ignore
-    expect(service).toBeTruthy();
-  });
-
-  it('should call login', () => {
+  it('should call login and return session information', () => {
     const loginRequest: LoginRequest = {
       email: 'test@test.com',
       password: 'password123',
@@ -51,6 +64,7 @@ describe('AuthService', () => {
       // @ts-ignore
       expect(response).toEqual(mockResponse);
     });
+
     const req = httpMock.expectOne('api/auth/login');
     // @ts-ignore
     expect(req.request.method).toBe('POST');
@@ -59,7 +73,7 @@ describe('AuthService', () => {
     req.flush(mockResponse);
   });
 
-  it('should call register', () => {
+  it('should call register and succeed', () => {
     const registerRequest: RegisterRequest = {
       email: 'test@test.com',
       firstName: 'John',

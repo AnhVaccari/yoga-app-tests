@@ -11,6 +11,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { jest } from '@jest/globals';
 
 describe('RegisterComponent (unit tests)', () => {
   let component: RegisterComponent;
@@ -40,13 +41,19 @@ describe('RegisterComponent (unit tests)', () => {
     fixture.detectChanges();
   });
 
+  // @ts-ignore
   it('should create', () => expect(component).toBeTruthy());
 
   it('should have invalid form when fields are empty', () => {
+    // @ts-ignore
     expect(component.form.valid).toBeFalsy();
+    // @ts-ignore
     expect(component.form.get('firstName')?.hasError('required')).toBeTruthy();
+    // @ts-ignore
     expect(component.form.get('lastName')?.hasError('required')).toBeTruthy();
+    // @ts-ignore
     expect(component.form.get('email')?.hasError('required')).toBeTruthy();
+    // @ts-ignore
     expect(component.form.get('password')?.hasError('required')).toBeTruthy();
   });
 
@@ -59,7 +66,9 @@ describe('RegisterComponent (unit tests)', () => {
       password: 'password123',
     });
     component.submit();
+    // @ts-ignore
     expect(mockAuthService.register).toHaveBeenCalled();
+    // @ts-ignore
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/login']);
   });
 
@@ -72,6 +81,7 @@ describe('RegisterComponent (unit tests)', () => {
       password: 'password123',
     });
     component.submit();
+    // @ts-ignore
     expect(component.onError).toBeTruthy();
   });
 });
@@ -100,7 +110,7 @@ describe('RegisterComponent (integration tests)', () => {
     fixture.detectChanges();
   });
 
-  it('should register and redirect (integration test)', () => {
+  it('should register and redirect to login', () => {
     const navigateSpy = jest.spyOn(router, 'navigate');
 
     // Mock
@@ -126,16 +136,19 @@ describe('RegisterComponent (integration tests)', () => {
 
     component.submit();
 
+    // @ts-ignore
     expect(authService.register).toHaveBeenCalledWith({
       email: 'newuser@test.com',
       firstName: 'New',
       lastName: 'User',
       password: 'password123',
     });
+
+    // @ts-ignore
     expect(navigateSpy).toHaveBeenCalledWith(['/login']);
   });
 
-  it('should handle register error (integration test)', () => {
+  it('should handle register error and not redirect', () => {
     const navigateSpy = jest.spyOn(router, 'navigate');
 
     jest
@@ -151,8 +164,11 @@ describe('RegisterComponent (integration tests)', () => {
 
     component.submit();
 
+    // @ts-ignore
     expect(authService.register).toHaveBeenCalled();
+    // @ts-ignore
     expect(component.onError).toBe(true);
+    // @ts-ignore
     expect(navigateSpy).not.toHaveBeenCalled();
   });
 });
