@@ -2,16 +2,13 @@ package com.openclassrooms.starterjwt.controllers;
 
 import com.openclassrooms.starterjwt.models.User;
 import com.openclassrooms.starterjwt.repository.UserRepository;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +17,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Transactional
@@ -28,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class UserControllerIntegrationTest {
 
-   @Autowired
+    @Autowired
     private MockMvc mockMvc;
 
     @Autowired
@@ -36,31 +32,32 @@ public class UserControllerIntegrationTest {
 
     private User testUser;
 
-     @BeforeAll
-     void setUpAll() {
+    @BeforeEach
+    void setUp() {
         testUser = new User();
         testUser.setEmail("test@example.com");
         testUser.setFirstName("John");
         testUser.setLastName("Doe");
         testUser.setPassword("password123");
         testUser.setAdmin(false);
-        
+
         testUser = userRepository.save(testUser);
-        
-        System.out.println("=== SETUP INTEGRATION TESTS ===");
-        System.out.println("Test user created with ID: " + testUser.getId());
+
+        // System.out.println("=== SETUP INTEGRATION TESTS ===");
+        // System.out.println("Test user created with ID: " + testUser.getId());
     }
 
-     @AfterAll
-     void tearDownAll() {
+    @AfterEach
+    void tearDown() {
 
-         System.out.println("=== CLEANUP INTEGRATION TESTS ===");
-        
+        // System.out.println("=== CLEANUP INTEGRATION TESTS ===");
+
         userRepository.deleteAll();
-        System.out.println("All test data cleaned up");
+
+        // System.out.println("All test data cleaned up");
     }
 
-/*---------------------------------- USER EXIST ---------------------------- */
+    /*---------------------------------- USER EXIST ---------------------------- */
 
     @Test
     @WithMockUser(username = "test@example.com")
@@ -69,7 +66,7 @@ public class UserControllerIntegrationTest {
         System.out.println("=== TEST GET USER - SUCCESS ===");
         System.out.println("User ID: " + testUser.getId());
 
-        // When & Then -  MockMvc
+        // When & Then - MockMvc
         mockMvc.perform(get("/api/user/" + testUser.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value(testUser.getEmail()))
@@ -78,7 +75,7 @@ public class UserControllerIntegrationTest {
 
         System.out.println("Test passed with MockMvc");
     }
-    
+
     /*---------------------------------- USER INEXISTANT ---------------------------- */
 
     @Test
@@ -98,7 +95,7 @@ public class UserControllerIntegrationTest {
     }
 
     /*---------------------------------- USER (INVALID ID) ---------------------------- */
-      
+
     @Test
     @WithMockUser
     void shouldReturnBadRequest_WhenInvalidId() throws Exception {
@@ -108,7 +105,7 @@ public class UserControllerIntegrationTest {
         System.out.println("=== TEST GET USER - INVALID ID ===");
         System.out.println("Invalid ID: " + invalidId);
 
-        // When & Then - MockMvc 
+        // When & Then - MockMvc
         mockMvc.perform(get("/api/user/" + invalidId))
                 .andExpect(status().isBadRequest());
 
@@ -116,15 +113,15 @@ public class UserControllerIntegrationTest {
     }
 
     /*---------------------------------- DELETE USER ---------------------------- */
- 
+
     @Test
     // Même email que testUser
-    @WithMockUser(username = "test@example.com") 
+    @WithMockUser(username = "test@example.com")
     void shouldDeleteUser_WhenUserDeletesHimself() throws Exception {
 
-        System.out.println("=== TEST DELETE USER - SUCCESS ===");
-        System.out.println("User deleting himself: " + testUser.getEmail());
-        System.out.println("User ID: " + testUser.getId());
+        // System.out.println("=== TEST DELETE USER - SUCCESS ===");
+        // System.out.println("User deleting himself: " + testUser.getEmail());
+        // System.out.println("User ID: " + testUser.getId());
 
         // When & Then - L'utilisateur peut se supprimer lui-même
         mockMvc.perform(delete("/api/user/" + testUser.getId()))
@@ -134,48 +131,44 @@ public class UserControllerIntegrationTest {
         assertThat(userRepository.findById(testUser.getId()))
                 .isEmpty();
 
-        System.out.println("User successfully deleted");
+        // System.out.println("User successfully deleted");
     }
 
     /*---------------------------------- DELETE USER (UNAUTHORIZED) ---------------------------- */
 
     @Test
-    // Email différent 
-    @WithMockUser(username = "different@example.com") 
+    // Email différent
+    @WithMockUser(username = "different@example.com")
     void shouldReturnUnauthorized_WhenUserTriesToDeleteAnotherUser() throws Exception {
 
-    // Given - Créer un autre utilisateur pour ce test
-    User anotherUser = new User();
-    anotherUser.setEmail("another@example.com");
-    anotherUser.setFirstName("Sylvie");
-    anotherUser.setLastName("Yogi");
-    anotherUser.setPassword("password456");
-    anotherUser.setAdmin(false);
-    anotherUser = userRepository.save(anotherUser);
-    
-    System.out.println("=== TEST DELETE USER - UNAUTHORIZED ===");
-    System.out.println("Authenticated user: different@example.com");
-    System.out.println("Trying to delete user: " + anotherUser.getEmail());
-    
-    // When & Then - Tentative de suppression d'un autre utilisateur
-    mockMvc.perform(delete("/api/user/" + anotherUser.getId()))
-        .andExpect(status().isUnauthorized());
-    
-    // Vérification que l'utilisateur n'a PAS été supprimé
-    assertThat(userRepository.findById(anotherUser.getId()))
-        .isPresent() // L'utilisateur existe encore
-        .get()
-        .extracting(User::getEmail)
-        .isEqualTo(anotherUser.getEmail());
-    
-    System.out.println("Unauthorized access blocked as expected");
-    
-    // Cleanup de ce test
-    userRepository.deleteById(anotherUser.getId());
+        // Given - Créer un autre utilisateur pour ce test
+        User anotherUser = new User();
+        anotherUser.setEmail("another@example.com");
+        anotherUser.setFirstName("Sylvie");
+        anotherUser.setLastName("Yogi");
+        anotherUser.setPassword("password456");
+        anotherUser.setAdmin(false);
+        anotherUser = userRepository.save(anotherUser);
+
+        System.out.println("=== TEST DELETE USER - UNAUTHORIZED ===");
+        System.out.println("Authenticated user: different@example.com");
+        System.out.println("Trying to delete user: " + anotherUser.getEmail());
+
+        // When & Then - Tentative de suppression d'un autre utilisateur
+        mockMvc.perform(delete("/api/user/" + anotherUser.getId()))
+                .andExpect(status().isUnauthorized());
+
+        // Vérification que l'utilisateur n'a PAS été supprimé
+        assertThat(userRepository.findById(anotherUser.getId()))
+                .isPresent() // L'utilisateur existe encore
+                .get()
+                .extracting(User::getEmail)
+                .isEqualTo(anotherUser.getEmail());
+
+        System.out.println("Unauthorized access blocked as expected");
+
+        // Cleanup de ce test
+        userRepository.deleteById(anotherUser.getId());
+    }
+
 }
-
-
-}
-
-    
-
