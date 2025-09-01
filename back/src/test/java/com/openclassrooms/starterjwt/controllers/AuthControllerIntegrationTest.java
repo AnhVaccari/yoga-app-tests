@@ -92,6 +92,40 @@ class AuthControllerIntegrationTest {
                 .andExpect(status().isUnauthorized());
     }
 
+    /*---------------- LOGIN FAIL (EMPTY EMAIL) ----------------*/
+    @Test
+    void shouldReturnBadRequest_WhenEmailEmpty() throws Exception {
+        String json = "{ \"email\": \"\", \"password\": \"password123\" }";
+
+        mockMvc.perform(post("/api/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isBadRequest());
+    }
+
+    /*---------------- LOGIN FAIL (EMPTY PASSWORD) ----------------*/
+    @Test
+    void shouldReturnBadRequest_WhenPasswordEmpty() throws Exception {
+        String json = "{ \"email\": \"test@example.com\", \"password\": \"\" }";
+
+        mockMvc.perform(post("/api/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isBadRequest());
+    }
+
+    /*---------------- REGISTER SUCCESS ----------------*/
+    @Test
+    void shouldRegisterUserSuccessfully() throws Exception {
+        String json = "{ \"email\": \"newuser@example.com\", \"firstName\": \"Jane\", \"lastName\": \"Smith\", \"password\": \"password123\" }";
+
+        mockMvc.perform(post("/api/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("User registered successfully!"));
+    }
+
     /*---------------- REGISTER FAIL (EMAIL ALREADY TAKEN) ----------------*/
     @Test
     void shouldReturnBadRequest_WhenEmailAlreadyTaken() throws Exception {

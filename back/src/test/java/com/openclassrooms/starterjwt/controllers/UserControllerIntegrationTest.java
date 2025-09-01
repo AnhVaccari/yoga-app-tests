@@ -57,14 +57,14 @@ public class UserControllerIntegrationTest {
         // System.out.println("All test data cleaned up");
     }
 
-    /*---------------------------------- USER EXIST ---------------------------- */
+    /*---------------------------------- USER EXISTANT ---------------------------- */
 
     @Test
     @WithMockUser(username = "test@example.com")
     void shouldReturnUser_WhenValidId() throws Exception {
 
-        System.out.println("=== TEST GET USER - SUCCESS ===");
-        System.out.println("User ID: " + testUser.getId());
+        // System.out.println("=== TEST GET USER - SUCCESS ===");
+        // System.out.println("User ID: " + testUser.getId());
 
         // When & Then - MockMvc
         mockMvc.perform(get("/api/user/" + testUser.getId()))
@@ -73,7 +73,7 @@ public class UserControllerIntegrationTest {
                 .andExpect(jsonPath("$.firstName").value(testUser.getFirstName()))
                 .andExpect(jsonPath("$.lastName").value(testUser.getLastName()));
 
-        System.out.println("Test passed with MockMvc");
+        // System.out.println("Test passed with MockMvc");
     }
 
     /*---------------------------------- USER INEXISTANT ---------------------------- */
@@ -84,8 +84,8 @@ public class UserControllerIntegrationTest {
         // Given - ID inexistant
         Long nonExistentId = 99999L;
 
-        System.out.println("=== TEST GET USER - NOT FOUND ===");
-        System.out.println("Non-existent ID: " + nonExistentId);
+        // System.out.println("=== TEST GET USER - NOT FOUND ===");
+        // System.out.println("Non-existent ID: " + nonExistentId);
 
         // When & Then - MockMvc
         mockMvc.perform(get("/api/user/" + nonExistentId))
@@ -102,14 +102,14 @@ public class UserControllerIntegrationTest {
         // Given - ID invalide (pas un nombre)
         String invalidId = "invalid-id";
 
-        System.out.println("=== TEST GET USER - INVALID ID ===");
-        System.out.println("Invalid ID: " + invalidId);
+        // System.out.println("=== TEST GET USER - INVALID ID ===");
+        // System.out.println("Invalid ID: " + invalidId);
 
         // When & Then - MockMvc
         mockMvc.perform(get("/api/user/" + invalidId))
                 .andExpect(status().isBadRequest());
 
-        System.out.println("400 Bad Request returned as expected");
+        // System.out.println("400 Bad Request returned as expected");
     }
 
     /*---------------------------------- DELETE USER ---------------------------- */
@@ -138,21 +138,21 @@ public class UserControllerIntegrationTest {
 
     @Test
     // Email différent
-    @WithMockUser(username = "different@example.com")
+    @WithMockUser(username = "ana@example.com")
     void shouldReturnUnauthorized_WhenUserTriesToDeleteAnotherUser() throws Exception {
 
         // Given - Créer un autre utilisateur pour ce test
         User anotherUser = new User();
-        anotherUser.setEmail("another@example.com");
+        anotherUser.setEmail("other@example.com");
         anotherUser.setFirstName("Sylvie");
         anotherUser.setLastName("Yogi");
         anotherUser.setPassword("password456");
         anotherUser.setAdmin(false);
         anotherUser = userRepository.save(anotherUser);
 
-        System.out.println("=== TEST DELETE USER - UNAUTHORIZED ===");
-        System.out.println("Authenticated user: different@example.com");
-        System.out.println("Trying to delete user: " + anotherUser.getEmail());
+        // System.out.println("=== TEST DELETE USER - UNAUTHORIZED ===");
+        // System.out.println("Authenticated user: ana@example.com");
+        // System.out.println("Trying to delete user: " + otherUser.getEmail());
 
         // When & Then - Tentative de suppression d'un autre utilisateur
         mockMvc.perform(delete("/api/user/" + anotherUser.getId()))
@@ -165,7 +165,7 @@ public class UserControllerIntegrationTest {
                 .extracting(User::getEmail)
                 .isEqualTo(anotherUser.getEmail());
 
-        System.out.println("Unauthorized access blocked as expected");
+        // System.out.println("Unauthorized access blocked as expected");
 
         // Cleanup de ce test
         userRepository.deleteById(anotherUser.getId());

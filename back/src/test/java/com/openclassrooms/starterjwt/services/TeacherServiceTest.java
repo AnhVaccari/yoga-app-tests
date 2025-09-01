@@ -89,7 +89,8 @@ public class TeacherServiceTest {
     assertEquals(expectedTeacher.getFirstName(), actualTeacher.getFirstName());
     assertEquals(expectedTeacher.getLastName(), actualTeacher.getLastName());
 
-    System.out.println("Teacher trouvé: " + actualTeacher.getFirstName() + " " + actualTeacher.getLastName());
+    // System.out.println("Teacher trouvé: " + actualTeacher.getFirstName() + " " +
+    // actualTeacher.getLastName());
 
     // Vérification de l'appel au repository
     verify(teacherRepository, times(1)).findById(teacherId);
@@ -102,8 +103,8 @@ public class TeacherServiceTest {
     // Given - Préparation des données
     Long teacherId = 999L;
 
-    System.out.println("=== TEST FIND BY ID - NOT FOUND ===");
-    System.out.println("Teacher ID recherché (inexistant): " + teacherId);
+    // System.out.println("=== TEST FIND BY ID - NOT FOUND ===");
+    // System.out.println("Teacher ID recherché (inexistant): " + teacherId);
 
     // Configuration du mock - retourne Optional.empty(), Optional.empty() : simule
     // un teacher non trouvé
@@ -115,7 +116,7 @@ public class TeacherServiceTest {
     // Then - Vérifications, assertNull() vérifie que la méthode retourne bien null
     assertNull(actualTeacher);
 
-    System.out.println("Résultat: null comme attendu ");
+    // System.out.println("Résultat: null comme attendu ");
 
     // Vérification de l'appel au repository
     verify(teacherRepository, times(1)).findById(teacherId);
