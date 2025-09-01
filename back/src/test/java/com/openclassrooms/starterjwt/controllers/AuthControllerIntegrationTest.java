@@ -105,4 +105,29 @@ class AuthControllerIntegrationTest {
                 .andExpect(jsonPath("$.message").value("Error: Email is already taken!"));
     }
 
+    /*---------------- REGISTER FAIL (INVALID REQUEST) ----------------*/
+    @Test
+    void shouldReturnBadRequest_WhenRegisterRequestInvalid() throws Exception {
+        // Email mal formé
+        String jsonInvalidEmail = "{ \"email\": \"invalidemail\", \"firstName\": \"John\", \"lastName\": \"Doe\", \"password\": \"password123\" }";
+        mockMvc.perform(post("/api/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonInvalidEmail))
+                .andExpect(status().isBadRequest());
+
+        // Mot de passe trop court
+        String jsonShortPassword = "{ \"email\": \"new@example.com\", \"firstName\": \"John\", \"lastName\": \"Doe\", \"password\": \"123\" }";
+        mockMvc.perform(post("/api/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonShortPassword))
+                .andExpect(status().isBadRequest());
+
+        // Nom vide
+        String jsonEmptyLastName = "{ \"email\": \"new2@example.com\", \"firstName\": \"John\", \"lastName\": \"\", \"password\": \"password123\" }";
+        mockMvc.perform(post("/api/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonEmptyLastName))
+                .andExpect(status().isBadRequest());
+    }
+
 }

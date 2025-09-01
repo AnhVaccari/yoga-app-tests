@@ -25,8 +25,9 @@ class UserServiceTest {
     @InjectMocks
     private UserService userService;
 
+    /*---------------- GET USER ----------------*/
     @Test
-    void testFindById_WhenUserExists_ShoulReturnUser() {
+    void shouldReturnUser_WhenUserExists() {
         // Given - Préparation des données
         Long userId = 1L;
         User expectedUser = new User();
@@ -62,8 +63,10 @@ class UserServiceTest {
 
     }
 
+    /*---------------- DELETE USER ----------------*/
+
     @Test
-    void testDelete_ShouldCallRepositoryDeleteById() {
+    void shouldDeleteUser_WhenValidId() {
         // Given - Préparation des données
         Long userId = 1L;
 
@@ -81,8 +84,9 @@ class UserServiceTest {
         // System.out.println("Vérification: deleteById(" + userId + ")");
     }
 
+    /*---------------- GET USER ( USER DOES NOT EXISTS ) ----------------*/
     @Test
-    void testFindById_WhenUserNotExists_ShouldReturnNuu() {
+    void shouldReturnNull_WhenUserNotExists() {
         // Given
         Long userId = 999L;
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
