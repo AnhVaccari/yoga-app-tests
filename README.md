@@ -122,7 +122,9 @@ mysql -u root -p yoga < ressources/sql/script.sql
 
 #### End-to-End (Cypress)
 
-![Rapport e2e](screenshots/coverage/rapport_e2e_tests.png)
+- **Localisation :** front/coverage/lcov-report/index.html
+
+![Rapport Jest](screenshots/coverage/rapport_e2e_tests.png)
 
 ## Resources
 
