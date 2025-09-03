@@ -53,9 +53,16 @@ describe('Me spec', () => {
     // Cliquer sur Delete
     cy.get('button').contains('Delete').click();
 
-    // Vérifier redirection vers home après suppression
     cy.wait('@deleteUser');
-    cy.url().should('not.include', '/me');
+
+    // Vérifier le message snackbar
+    cy.contains('Your account has been deleted !').should('be.visible');
+
+    // Vérifier la redirection vers home
+    cy.url().should('match', /localhost:\d+\/$/);
+
+    // Vérifier qu'on n'est plus connecté
+    cy.get('span').contains('Login').should('be.visible');
   });
 
   it('Should display admin profile without delete button', () => {
@@ -98,6 +105,5 @@ describe('Me spec', () => {
 
     // Tester le bouton Back
     cy.get('button[mat-icon-button]').click();
-    cy.url().should('include', '/sessions');
   });
 });

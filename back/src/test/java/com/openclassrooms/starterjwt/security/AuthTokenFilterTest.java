@@ -1,6 +1,7 @@
 package com.openclassrooms.starterjwt.security;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Collections;
@@ -43,6 +44,7 @@ class AuthTokenFilterTest {
     @InjectMocks
     private AuthTokenFilter authTokenFilter;
 
+    /*---------------- AUTHENTICATE WHEN TOKEN IS VALID  ----------------*/
     @Test
     void shouldAuthenticateUser_whenValidToken() throws Exception {
         // Given
@@ -62,6 +64,8 @@ class AuthTokenFilterTest {
         assertThat(SecurityContextHolder.getContext().getAuthentication()).isNotNull();
     }
 
+    /*---------------- NOT AUTHENTICATE WHEN TOKEN IS INVALID ----------------*/
+
     @Test
     void shouldNotAuthenticate_whenInvalidToken() throws Exception {
         // Given
@@ -76,6 +80,7 @@ class AuthTokenFilterTest {
         assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
     }
 
+    /*---------------- NOT AUTHENTICATE WHEN NO AUTHORIZATION HEADER ----------------*/
     @Test
     void shouldNotAuthenticate_whenNoAuthorizationHeader() throws Exception {
         // Given
@@ -89,6 +94,8 @@ class AuthTokenFilterTest {
         verify(jwtUtils, never()).validateJwtToken(any());
     }
 
+    /*---------------- NOT AUTHENTICATE WHEN AUTHORIZATION HEADER IS INVALID ----------------*/
+
     @Test
     void shouldNotAuthenticate_whenAuthorizationHeaderWithoutBearer() throws Exception {
         // Given
@@ -101,6 +108,8 @@ class AuthTokenFilterTest {
         verify(filterChain).doFilter(request, response);
         verify(jwtUtils, never()).validateJwtToken(any());
     }
+
+    /*---------------- CONTINUE FILTER WHEN EXCEPTION THROWN ----------------*/
 
     @Test
     void shouldContinueFilter_whenExceptionThrown() throws Exception {

@@ -158,5 +158,12 @@ describe('Sessions spec', () => {
 
     // Vérifier redirection
     cy.url().should('include', '/sessions');
+
+    cy.wait('@createSession');
+    cy.get('mat-card-title').should('contain', 'Sessions available');
+
+    cy.get('button').contains('Detail').should('be.visible');
+    cy.get('.mat-card-content').should('be.visible');
+    cy.get('mat-card').should('have.length', 2);
   });
 });
