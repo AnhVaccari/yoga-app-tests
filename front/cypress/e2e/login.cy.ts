@@ -47,18 +47,16 @@ describe('Login spec', () => {
   });
 
   it('Should test login with additional interactions', () => {
-    // Vos mocks existants qui marchent...
-
     // Login existant qui fonctionne
     cy.visit('/login');
     cy.get('input[formControlName=email]').type('yoga@studio.com');
     cy.get('input[formControlName=password]').type('test!1234{enter}');
 
-    cy.get('mat-toolbar').should('be.visible'); // Test du toolbar
-    cy.get('button').should('be.visible'); // Test des boutons
-    cy.get('[routerLink]').should('exist'); // Test des liens de navigation
+    cy.get('mat-toolbar').should('be.visible');
+    cy.get('button').should('be.visible');
+    cy.get('[routerLink]').should('exist');
 
-    cy.get('*').should('exist'); // Force l'analyse de tous les éléments
+    cy.get('*').should('exist');
     cy.get('mat-form-field').should('be.visible');
     cy.get('mat-card').should('be.visible');
     cy.get('button[type=submit]').should('be.visible');

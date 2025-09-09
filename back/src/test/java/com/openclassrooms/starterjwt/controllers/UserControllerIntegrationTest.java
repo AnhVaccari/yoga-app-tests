@@ -91,7 +91,7 @@ public class UserControllerIntegrationTest {
         mockMvc.perform(get("/api/user/" + nonExistentId))
                 .andExpect(status().isNotFound());
 
-        System.out.println("404 Not Found returned as expected");
+        // System.out.println("404 Not Found returned as expected");
     }
 
     /*---------------------------------- USER (INVALID ID) ---------------------------- */

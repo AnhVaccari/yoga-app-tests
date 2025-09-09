@@ -73,8 +73,8 @@ class JwtUtilsTest {
     void shouldInvalidateExpiredToken() {
         String token = Jwts.builder()
                 .setSubject("user")
-                .setIssuedAt(new Date(System.currentTimeMillis() - 120000)) // 2 min ago
-                .setExpiration(new Date(System.currentTimeMillis() - 60000)) // 1 min ago
+                .setIssuedAt(new Date(System.currentTimeMillis() - 120000))
+                .setExpiration(new Date(System.currentTimeMillis() - 60000))
                 .signWith(SignatureAlgorithm.HS512, "testSecret")
                 .compact();
 
