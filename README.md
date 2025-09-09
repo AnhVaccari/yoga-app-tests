@@ -114,17 +114,17 @@ mysql -u root -p yoga < ressources/sql/script.sql
 
 ##
 
-![Rapport JaCoCo](screenshots/coverage/rapport_backend_tests.png)
+![Rapport JaCoCo](screenshots/coverage/back_coverage_tests.png)
 
 #### Frontend (Jest)
 
-![Rapport Jest](screenshots/coverage/rapport_frontend_tests.png)
+![Rapport Jest](screenshots/coverage/front_coverage_units_tests.png)
 
 #### End-to-End (Cypress)
 
 - **Localisation :** front/coverage/lcov-report/index.html
 
-![Rapport Jest](screenshots/coverage/rapport_e2e_tests.png)
+![Rapport e2e](screenshots/coverage/e2e_tests_coverage.png)
 
 ## Resources
 
